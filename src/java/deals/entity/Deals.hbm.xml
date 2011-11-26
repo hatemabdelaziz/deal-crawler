@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/11/2011 06:43:43 ? by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="deals.entity.Deals" table="deals" catalog="dealsdb">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="cities" class="deals.entity.Cities" fetch="select">
+            <column name="city_id" />
+        </many-to-one>
+        <many-to-one name="language" class="deals.entity.Language" fetch="select">
+            <column name="language_id" not-null="true" />
+        </many-to-one>
+        <property name="title" type="string">
+            <column name="title" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="65535" />
+        </property>
+        <property name="value" type="big_decimal">
+            <column name="value" precision="10" />
+        </property>
+        <property name="discount" type="big_decimal">
+            <column name="discount" precision="10" />
+        </property>
+        <property name="price" type="big_decimal">
+            <column name="price" precision="10" />
+        </property>
+        <property name="saving" type="big_decimal">
+            <column name="saving" precision="10" />
+        </property>
+        <property name="end" type="timestamp">
+            <column name="end" length="19" />
+        </property>
+        <property name="url" type="string">
+            <column name="url" />
+        </property>
+        <property name="photo" type="string">
+            <column name="photo" />
+        </property>
+        <property name="views" type="int">
+            <column name="views" not-null="true" />
+        </property>
+        <property name="bestDeal" type="int">
+            <column name="best_deal" not-null="true" />
+        </property>
+        <property name="currency" type="string">
+            <column name="currency" length="20" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/11/2011 06:43:43 ? by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="deals.entity.Cities" table="cities" catalog="dealsdb">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="countries" class="deals.entity.Countries" fetch="select">
+            <column name="CountryCode" length="3" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="Name" length="35" not-null="true" />
+        </property>
+        <property name="lat" type="string">
+            <column name="lat" length="20" />
+        </property>
+        <property name="lon" type="string">
+            <column name="lon" length="20" />
+        </property>
+        <property name="currency" type="string">
+            <column name="currency" length="20" not-null="true" />
+        </property>
+        <set name="dealses" inverse="true">
+            <key>
+                <column name="city_id" />
+            </key>
+            <one-to-many class="deals.entity.Deals" />
+        </set>
+    </class>
+</hibernate-mapping>
