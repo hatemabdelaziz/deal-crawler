@@ -64,47 +64,15 @@ public class DealController extends MultiActionController {
         HtmlCleaner cleaner = new HtmlCleaner();
         CleanerProperties props = new CleanerProperties();
         CleanerTransformations transformations = new CleanerTransformations();
-        TagNode tagNode = new HtmlCleaner(props).clean(new URL("http://www.cobone.com/deals/destinations/luxor-hurghada-hotel-stay/3816"));
-        Object[] titleList = tagNode.evaluateXPath("//a[@class='main-deal-title-header-link']");
+        TagNode tagNode = new HtmlCleaner(props).clean(new URL("http://dealoola.activedd.com/front/core/home.htm"));
 
-        if (titleList == null || titleList.length < 1) {
-            System.out.println("-------------------empty ");
-            deal.setTitle("Today Deal Title");
-        } else {
-            TagNode aNode = (TagNode) titleList[0];
-            String todayDealTitle = aNode.getText().toString();
-            deal.setTitle(todayDealTitle);
-        }
-      Object[]  descList = tagNode.evaluateXPath("//div[@class='main-deal-description-specifics-info']");
-        if (descList != null && descList.length >= 1) {
-            TagNode aNode = (TagNode) descList[0];
-            Object[] unusedCobonedata = tagNode.evaluateXPath("//div[@class='bold']");
-            if (unusedCobonedata != null && unusedCobonedata.length >= 1) {
-                ((TagNode) unusedCobonedata[0]).removeFromTree();
-            }
-            Object[] footer = tagNode.evaluateXPath("//b/i");
-            if (footer != null && footer.length >= 1) {
-                ((TagNode) footer[0]).removeFromTree();
-            }
-            if (footer != null && footer.length >= 1) {
-                ((TagNode) footer[0]).removeFromTree();
-            }
-//            aNode.removeAttribute("image");
-//            aNode.removeAttribute("br");
-//            aNode.getElementsByName("image", false);
-//            aNode.getElementsByName("br", false);
-//            String todayDealDesc = aNode.getText().toString();
-//            String content = todayDealDesc.replaceAll("<!--.*?-->", "").replaceAll("<[^>]+>", "");
-//            TagTransformation imageTt = new TagTransformation("image");
-//            TagTransformation brTt = new TagTransformation("br");
-//            transformations.addTransformation(imageTt);
-//            transformations.addTransformation(brTt);
-//            cleaner.setTransformations(transformations);
-//            deal.setTitle(content);
-//             TagNode decNode=cleaner.clean(content);
-//             String DealDesc = decNode.getText().toString().trim();
-//            deal.setTitle(DealDesc);
-//            System.out.println(cleaner.getInnerHtml(decNode));
+      Object[]  descListss = tagNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
+      TagNode categoryNode = (TagNode) descListss[0];
+    System.out.println("----------htmllle div contains input category  and ids-----"+cleaner.getInnerHtml(categoryNode));
+
         }
     }
-}
+//      public void saveDeal(HttpServletRequest request, HttpServletResponse response){
+//      }
+
+
