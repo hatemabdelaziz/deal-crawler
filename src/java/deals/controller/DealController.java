@@ -66,9 +66,9 @@ public class DealController extends MultiActionController {
         CleanerTransformations transformations = new CleanerTransformations();
         TagNode tagNode = new HtmlCleaner(props).clean(new URL("http://dealoola.activedd.com/front/core/home.htm"));
 
-      Object[]  descListss = tagNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
-      TagNode categoryNode = (TagNode) descListss[0];
-    System.out.println("----------htmllle div contains input category  and ids-----"+cleaner.getInnerHtml(categoryNode));
+        Object[]  descListss = tagNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
+        TagNode categoryNode = (TagNode) descListss[0];
+       System.out.println("----------htmllle div contains input category  and ids-----"+cleaner.getInnerHtml(categoryNode));
 
         }
     }
