@@ -6,6 +6,7 @@ package deals.controller;
 
 import deals.dao.DealDao;
 import deals.entity.Deals;
+import deals.entity.Language;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -46,7 +47,15 @@ public class DealController extends MultiActionController {
         String FEBestDeal = request.getParameter("FEBestDeal");
         ModelAndView mv = new ModelAndView("dealHeader");
         setDeal(request, response);
-
+        Deals deal = new Deals();
+        deal.setBestDeal(1);
+        deal.setTitle("sssss");
+        Language en=(Language) dealDao.get(Language.class , 2);
+        deal.setLanguage(en);
+        deal.setCurrency("EGP");
+        deal.setBestDeal(0);
+        deal.setViews(0);
+        dealDao.save(deal);
         return mv;
     }
 
@@ -66,9 +75,9 @@ public class DealController extends MultiActionController {
             String todayDealTitle = aNode.getText().toString();
             deal.setTitle(todayDealTitle);
         }
-        titleList = tagNode.evaluateXPath("//div[@class='main-deal-description-specifics-info']");
-        if (titleList != null && titleList.length >= 1) {
-            TagNode aNode = (TagNode) titleList[0];
+      Object[]  descList = tagNode.evaluateXPath("//div[@class='main-deal-description-specifics-info']");
+        if (descList != null && descList.length >= 1) {
+            TagNode aNode = (TagNode) descList[0];
             Object[] unusedCobonedata = tagNode.evaluateXPath("//div[@class='bold']");
             if (unusedCobonedata != null && unusedCobonedata.length >= 1) {
                 ((TagNode) unusedCobonedata[0]).removeFromTree();
@@ -80,20 +89,22 @@ public class DealController extends MultiActionController {
             if (footer != null && footer.length >= 1) {
                 ((TagNode) footer[0]).removeFromTree();
             }
-            aNode.removeAttribute("image");
-            aNode.removeAttribute("br");
-            aNode.getElementsByName("image", false);
-            aNode.getElementsByName("br", false);
-            String todayDealDesc = aNode.getText().toString();
-            String content = todayDealDesc.replaceAll("<!--.*?-->", "").replaceAll("<[^>]+>", "");
+//            aNode.removeAttribute("image");
+//            aNode.removeAttribute("br");
+//            aNode.getElementsByName("image", false);
+//            aNode.getElementsByName("br", false);
+//            String todayDealDesc = aNode.getText().toString();
+//            String content = todayDealDesc.replaceAll("<!--.*?-->", "").replaceAll("<[^>]+>", "");
 //            TagTransformation imageTt = new TagTransformation("image");
 //            TagTransformation brTt = new TagTransformation("br");
 //            transformations.addTransformation(imageTt);
 //            transformations.addTransformation(brTt);
 //            cleaner.setTransformations(transformations);
-            deal.setTitle(content);
-
-            deal.setTitle(cleaner.getInnerHtml(aNode).toString());
+//            deal.setTitle(content);
+//             TagNode decNode=cleaner.clean(content);
+//             String DealDesc = decNode.getText().toString().trim();
+//            deal.setTitle(DealDesc);
+//            System.out.println(cleaner.getInnerHtml(decNode));
         }
     }
 }
