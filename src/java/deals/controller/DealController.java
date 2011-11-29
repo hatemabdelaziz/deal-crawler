@@ -68,6 +68,13 @@ public class DealController extends MultiActionController {
 
         Object[]  descListss = tagNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
         TagNode categoryNode = (TagNode) descListss[0];
+        List<TagNode> checkboxInputs = categoryNode.getElementListByName("input", true);
+        for (TagNode theInput : checkboxInputs) {
+            String theCategoryId = theInput.getAttributeByName("value");
+            System.out.println("the category id = " +theCategoryId );
+        }
+        
+        
        System.out.println("----------htmllle div contains input category  and ids-----"+cleaner.getInnerHtml(categoryNode));
 
         }
