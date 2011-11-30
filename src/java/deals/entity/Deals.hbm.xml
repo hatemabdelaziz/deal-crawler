@@ -41,6 +41,9 @@
         <property name="photo" type="string">
             <column name="photo" />
         </property>
+        <property name="fromSite" type="string">
+            <column name="fromSite" />
+        </property>
         <property name="views" type="int">
             <column name="views" not-null="true" />
         </property>

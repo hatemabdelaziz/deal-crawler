@@ -56,11 +56,14 @@ public class DealController extends MultiActionController {
     }
 
     public void setDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
+        Deals.FromSite[] fromSites = Deals.FromSite.values();
         String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&partnersList=3&startNumber=0";
         String categorylistIds = "";
         HtmlCleaner cleaner = new HtmlCleaner();
         CleanerProperties props = new CleanerProperties();
         Language en = (Language) dealDao.get(Language.class, 2);
+       
+
         /*
          *  get all categories in dealoola search
          */
@@ -101,6 +104,7 @@ public class DealController extends MultiActionController {
                     BigDecimal dealdisc = BigDecimal.ZERO;
                     TagNode dealNode = (TagNode) searchDealsDiv[dealNo];
                     deal.setCurrency(city.getCurrency());
+                    deal.setFromSite(Deals.FromSite.cobone.name());
                     List<TagNode> readLinkNode = dealNode.getElementListByName("a", true);
                     if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
                         /*
