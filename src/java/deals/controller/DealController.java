@@ -62,7 +62,7 @@ public class DealController extends MultiActionController {
         HtmlCleaner cleaner = new HtmlCleaner();
         CleanerProperties props = new CleanerProperties();
         Language en = (Language) dealDao.get(Language.class, 2);
-       
+
 
         /*
          *  get all categories in dealoola search
@@ -113,15 +113,37 @@ public class DealController extends MultiActionController {
                         String dealUrl = "http://dealoola.activedd.com" + readLinkNode.get(0).getAttributeByName("href");
                         System.out.println("-------url" + dealUrl);
                         TagNode dealPageNode = new HtmlCleaner(props).clean(new URL(dealUrl));
- ///////// ////////////////////////////////////// deal title /////////////////////////////////////////
+                        ///////// ////////////////////////////////////// deal title /////////////////////////////////////////
                         Object[] dealTitleObjs = dealPageNode.evaluateXPath("//span[@class='deal-discount']/a");
                         if (dealTitleObjs != null && dealTitleObjs.length >= 1) {
                             TagNode titleNode = (TagNode) dealTitleObjs[0];
                             String dealtitle = titleNode.getText().toString().trim();
                             deal.setTitle(dealtitle);
                         }
+                        ///////// ////////////////////////////////////// deal Url on real site  /////////////////////////////////////////
+//                        Pattern pUrl = Pattern.compile("-?\\d+");
+//                        Matcher mUrl = pUrl.matcher(dealUrl);
+//                        int dealoolaDealId = 0;
+//                        if (mUrl.find()) {
+//                            dealoolaDealId = Integer.parseInt(mUrl.group());
+//
+//                            if (dealoolaDealId != 0) {
+//                                String BuyDealUrl = "http://dealoola.activedd.com/front/dealoola/buffer.htm?id=" + dealoolaDealId;
+//                                TagNode dealBuyUrlNode = new HtmlCleaner(props).clean(new URL(BuyDealUrl));
+//                                Object[] dealbuyUrlObjs = dealPageNode.evaluateXPath("//div[@class='message']");
+//                               System.out.println("-------- dealbuyUrlObjs.length -----"+dealbuyUrlObjs.length);
+//                                if (dealbuyUrlObjs != null && dealbuyUrlObjs.length >= 1) {
+//
+//                                    TagNode dealUrlNode = (TagNode) dealbuyUrlObjs[0];
+//                                    List<TagNode> urlNode = dealUrlNode.getElementListByName("a", true);
+//                                    String dealBuyUrl =  urlNode.get(0).getAttributeByName("href");
+//                                    System.out.println("------------------- dealBuyUrl" + dealBuyUrl);
+//                                    deal.setTitle(dealBuyUrl);
+//                                }
+//                            }
+//                        }
 
-  ////////////////////////////////////////// deal desc/////////////////////////////////////////
+                        ////////////////////////////////////////// deal desc/////////////////////////////////////////
 
                         Object[] dealDescObjs = dealPageNode.evaluateXPath("//p[@class='f deal-text']");
 
@@ -135,7 +157,7 @@ public class DealController extends MultiActionController {
                             deal.setDescription(dealDesc);
 
                         }
-  /////////////////////////////////////////////// deal image/////////////////////////////////////////
+                        /////////////////////////////////////////////// deal image/////////////////////////////////////////
 
                         Object[] dealIamgeObs = dealPageNode.evaluateXPath("//div[@class='deal_page_image f']");
 
@@ -146,7 +168,7 @@ public class DealController extends MultiActionController {
                             deal.setPhoto(dealdImage);
 
                         }
-  ////////////////////////////////////// deal value means first price before discount /////////////////////////////////////////
+                        ////////////////////////////////////// deal value means first price before discount /////////////////////////////////////////
 
                         Object[] dealvalueObjs = dealPageNode.evaluateXPath("//div[@class='f deal-price']");
                         if (dealvalueObjs != null && dealvalueObjs.length >= 1) {
@@ -161,7 +183,7 @@ public class DealController extends MultiActionController {
                             }
 
                         }
-  ////////////////////////////////////// deal price means  price after discount /////////////////////////////////////////
+                        ////////////////////////////////////// deal price means  price after discount /////////////////////////////////////////
 
                         Object[] dealpriceObjs = dealPageNode.evaluateXPath("//a[@class='press-buy f-r']");
                         if (dealpriceObjs != null && dealpriceObjs.length >= 1) {
@@ -177,7 +199,7 @@ public class DealController extends MultiActionController {
                         }
                         dealSave = dealVal.subtract(dealPrice);
                         deal.setSaving(dealSave);
-  ////////////////////////////////////// deal  discount /////////////////////////////////////////
+                        ////////////////////////////////////// deal  discount /////////////////////////////////////////
 
                         Object[] dealDiscObs = dealPageNode.evaluateXPath("//div[@class='f-r saved-money']");
                         if (dealDiscObs != null && dealDiscObs.length >= 1) {
@@ -191,7 +213,7 @@ public class DealController extends MultiActionController {
 
                             }
                         }
-  ////////////////////////////////////// deal  end date when deal closed /////////////////////////////////////////
+                        ////////////////////////////////////// deal  end date when deal closed /////////////////////////////////////////
 
                         Object[] dealDateObs = dealPageNode.evaluateXPath("//div[@class='deal_time_left']");
                         if (dealDateObs != null && dealDateObs.length >= 1) {
@@ -231,7 +253,7 @@ public class DealController extends MultiActionController {
 
                     }
 
-                    deal.setCities(city);
+                    deal.setCity(city);
                     deal.setLanguage(en);
                     deal.setViews(0);
                     deal.setBestDeal(0);
@@ -243,7 +265,29 @@ public class DealController extends MultiActionController {
 
         }
     }
+    /*
+     * link to search deals by city parameters cityId if cityId is null of empty cet cairo default city
+     */
+
+    public ModelAndView searchdeals(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
+        Integer cityId = 608;
+        if (request.getParameter("id") != null && request.getParameter("id") != "") {
+            cityId = Integer.parseInt(request.getParameter("id"));
+        }
+        List<Deals> deals = dealDao.getCityDeals(2, cityId, "end", "ASC");
+        request.setAttribute("deals", deals);
+        System.out.println("--------- deal Size ---------" + deals.size());
+        return new ModelAndView("dealsearch");
+    }
+
+    public ModelAndView getDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
+          if (request.getParameter("id") != null && request.getParameter("id") != "") {
+          Integer dealId =Integer.parseInt(request.getParameter("id"));
+           Deals deal=(Deals) dealDao.get(Deals.class, dealId);
+            request.setAttribute("deal", deal);
+          }
+        return new ModelAndView("deal");
+    }
+
+
 }
-
-
-

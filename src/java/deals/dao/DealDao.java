@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package deals.dao;
 
+import deals.entity.Deals;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.List;
 import org.hibernate.Criteria;
@@ -24,12 +26,14 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Query;
+
 /**
  *
  * @author SAMAR
  */
-public class DealDao extends HibernateDaoSupport{
-   @Transactional
+public class DealDao extends HibernateDaoSupport {
+
+    @Transactional
     public Object get(Class klass, int id) {
         return getHibernateTemplate().getSessionFactory().getCurrentSession().get(klass, id);
     }
@@ -120,6 +124,7 @@ public class DealDao extends HibernateDaoSupport{
         }
         return crit.list();
     }
+
     /**
      * Find objects
      *
@@ -131,7 +136,7 @@ public class DealDao extends HibernateDaoSupport{
      * @throws ClassNotFoundException
      */
     @Transactional
-    public List find(Class className, Hashtable<String, Object> attr, Hashtable<String, Object> constraints, Map<String,String> alises) throws ClassNotFoundException {
+    public List find(Class className, Hashtable<String, Object> attr, Hashtable<String, Object> constraints, Map<String, String> alises) throws ClassNotFoundException {
         Criteria crit = buildQuery(className, attr, constraints, alises);
         if (attr.get("start") != null) {
             crit.setFirstResult((Integer) attr.get("start"));
@@ -183,6 +188,7 @@ public class DealDao extends HibernateDaoSupport{
 
         return objs == null ? 0 : objs.size();
     }
+
     @Transactional
     public long count(Class className, Hashtable<String, Object> attr, Hashtable<String, Object> constraints, Map<String, String> alises) throws ClassNotFoundException {
 
@@ -288,7 +294,7 @@ public class DealDao extends HibernateDaoSupport{
      * @return
      * @throws ClassNotFoundException
      */
-    private Criteria buildQuery(Class className, Hashtable<String, Object> attr, Hashtable<String, Object> constraints, Map<String,String> alises) throws ClassNotFoundException {
+    private Criteria buildQuery(Class className, Hashtable<String, Object> attr, Hashtable<String, Object> constraints, Map<String, String> alises) throws ClassNotFoundException {
 
         Criteria crit = getHibernateTemplate().getSessionFactory().getCurrentSession().createCriteria(className);
 
@@ -355,7 +361,8 @@ public class DealDao extends HibernateDaoSupport{
 
         return crit;
     }
-        /**
+
+    /**
      * Add external constraints
      *
      * @param crit
@@ -363,10 +370,10 @@ public class DealDao extends HibernateDaoSupport{
      * @param values
      * @return
      */
-    public Criteria addAlises(Criteria crit, Map<String,String> alises) {
+    public Criteria addAlises(Criteria crit, Map<String, String> alises) {
         if (alises != null) {
             for (String key : alises.keySet()) {
-                crit.createAlias(key,alises.get(key));
+                crit.createAlias(key, alises.get(key));
             }
         }
 
@@ -400,18 +407,19 @@ public class DealDao extends HibernateDaoSupport{
 
     }
 
-      @Transactional
-   public Boolean isEditObjectUnique(String objectName,String propertyName,Integer propertyValue,String identiferName,Integer IdentferValue ) {
-        String query = "from "+ objectName + "  where "+"" + propertyName + " = :poperty and " + identiferName + "!= :id ";
+    @Transactional
+    public Boolean isEditObjectUnique(String objectName, String propertyName, Integer propertyValue, String identiferName, Integer IdentferValue) {
+        String query = "from " + objectName + "  where " + "" + propertyName + " = :poperty and " + identiferName + "!= :id ";
         Query hql = getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(query);
         hql.setParameter("poperty", propertyValue);
         hql.setParameter("id", IdentferValue);
-        if( hql.list() == null || hql.list().size() == 0)
-           return true;
-        else
+        if (hql.list() == null || hql.list().size() == 0) {
+            return true;
+        } else {
             return false;
+        }
 
-   }
+    }
 
     @Transactional
     public List searchObject(String objectName, String propertyName, String propertyValue) {
@@ -437,10 +445,11 @@ public class DealDao extends HibernateDaoSupport{
     }
 
     @Transactional
-    public List findWithConditions(Class class1,String column, String value) {
+    public List findWithConditions(Class class1, String column, String value) {
         return getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery("from " + class1.getName() + " WHERE " + column + " = '" + value + "'").list();
     }
-     public static boolean isInt(String number) {
+
+    public static boolean isInt(String number) {
         try {
             Integer.parseInt(number);
             return true;
@@ -449,5 +458,18 @@ public class DealDao extends HibernateDaoSupport{
         }
 
 
+    }
+
+    @Transactional
+    public List<Deals> getCityDeals(int langId, int cityId, String orderColumn, String orderWay) {
+        Calendar currentDate = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateNow = formatter.format(currentDate.getTime());
+        //System.out.println("currentdate" + currentDate + "dateNow" + dateNow);
+        String query = "from Deals deals where deals.city.id = :cityId and deals.language.id = :langId and deals.end > '" + dateNow + "' order by deals." + orderColumn + " " + orderWay;
+        Query hql = getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(query);
+        hql.setParameter("langId", langId);
+        hql.setParameter("cityId", cityId);
+        return hql.list();
     }
 }
