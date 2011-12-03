@@ -280,13 +280,15 @@ public class DealController extends MultiActionController {
         return new ModelAndView("dealsearch");
     }
 
-    public ModelAndView getDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
-          if (request.getParameter("id") != null && request.getParameter("id") != "") {
+    public void getDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
+         System.out.print("yes suzan");
+        if (request.getParameter("id") != null && request.getParameter("id") != "") {
           Integer dealId =Integer.parseInt(request.getParameter("id"));
            Deals deal=(Deals) dealDao.get(Deals.class, dealId);
             request.setAttribute("deal", deal);
           }
-        return new ModelAndView("deal");
+          System.out.print("yes suzan");
+//        return new ModelAndView("deal");
     }
 
 
