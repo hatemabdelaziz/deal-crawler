@@ -1,5 +1,4 @@
 package deals.entity;
-// Generated 25/11/2011 06:43:42 ã by Hibernate Tools 3.2.1.GA
 
 
 import java.util.HashSet;

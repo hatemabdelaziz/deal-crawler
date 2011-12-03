@@ -4,6 +4,8 @@
  */
 package deals.controller;
 
+import deals.command.CommandList;
+import deals.command.CommandObject;
 import deals.dao.DealDao;
 import deals.entity.Cities;
 import deals.entity.Deals;
@@ -35,6 +37,8 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -51,6 +55,7 @@ public class DealController extends MultiActionController {
     public ModelAndView dealHeader(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
         String FEBestDeal = request.getParameter("FEBestDeal");
         ModelAndView mv = new ModelAndView("dealHeader");
+        dealDao.deleteAllDealsByFromSite(Deals.FromSite.cobone.name());
         setDeal(request, response);
         return mv;
     }
@@ -268,25 +273,32 @@ public class DealController extends MultiActionController {
     /*
      * link to search deals by city parameters cityId if cityId is null of empty cet cairo default city
      */
-
-    public ModelAndView searchdeals(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
+@RequestMapping("searchdeals.htm")
+    public @ResponseBody Object searchdeals(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
         Integer cityId = 608;
         if (request.getParameter("id") != null && request.getParameter("id") != "") {
             cityId = Integer.parseInt(request.getParameter("id"));
         }
-        List<Deals> deals = dealDao.getCityDeals(2, cityId, "end", "ASC");
-        request.setAttribute("deals", deals);
-        System.out.println("--------- deal Size ---------" + deals.size());
-        return new ModelAndView("dealsearch");
+        CommandList list = new CommandList();
+        List<Object> deals = dealDao.getCityDeals(2, cityId, "end", "ASC");
+        list.setList(deals);
+        list.setCurrentServerDate(new Date());
+        //request.setAttribute("deals", deals);
+        //System.out.println("--------- deal Size ---------" + deals.size());
+        return list;
     }
-
-    public ModelAndView getDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
-          if (request.getParameter("id") != null && request.getParameter("id") != "") {
+@RequestMapping("getDeal.htm")
+    public @ResponseBody Object getDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
+        CommandObject object = new CommandObject();  
+        if (request.getParameter("id") != null && request.getParameter("id") != "") {
           Integer dealId =Integer.parseInt(request.getParameter("id"));
            Deals deal=(Deals) dealDao.get(Deals.class, dealId);
-            request.setAttribute("deal", deal);
+            //request.setAttribute("deal", deal);
+           object.setObject(deal);
           }
-        return new ModelAndView("deal");
+        object.setCurrentServerDate(new Date());
+        
+        return object;
     }
 
 
