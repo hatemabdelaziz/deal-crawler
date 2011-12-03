@@ -37,6 +37,7 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,6 +49,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  @Controller
 public class DealController extends MultiActionController {
 
+    @Autowired
     private DealDao dealDao;
 
     public void setDealDao(DealDao dealDao) {
@@ -284,9 +286,10 @@ public class DealController extends MultiActionController {
         if (request.getParameter("id") != null && request.getParameter("id") != "") {
             cityId = Integer.parseInt(request.getParameter("id"));
         }
-        System.out.println("------ffffff");
+        System.out.println("------b list");
         CommandList list = new CommandList();
         List<Object> deals = dealDao.getCityDeals(2, cityId, "end", "ASC");
+        System.out.println("------b list size" +deals.size());
         list.setList(deals);
         list.setCurrentServerDate(new Date());
         //request.setAttribute("deals", deals);
