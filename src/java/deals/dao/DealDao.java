@@ -67,6 +67,12 @@ public class DealDao extends HibernateDaoSupport {
     public void delete(Object obj) {
         getHibernateTemplate().getSessionFactory().getCurrentSession().delete(obj);
     }
+    
+        @Transactional
+    public void deleteAllDealsByFromSite(String fromSite) {
+            String query = "delete from deals where fromSite like '"+fromSite+"'";
+        getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(query);
+    }
 
     @Transactional
     public List findAll(Class clazz) {
@@ -461,7 +467,7 @@ public class DealDao extends HibernateDaoSupport {
     }
 
     @Transactional
-    public List<Deals> getCityDeals(int langId, int cityId, String orderColumn, String orderWay) {
+    public List<Object> getCityDeals(int langId, int cityId, String orderColumn, String orderWay) {
         Calendar currentDate = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateNow = formatter.format(currentDate.getTime());
