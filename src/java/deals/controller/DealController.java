@@ -56,6 +56,7 @@ public class DealController extends MultiActionController {
         this.dealDao = dealDao;
     }
 
+    @RequestMapping("dealHeader.htm")
     public ModelAndView dealHeader(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
         String FEBestDeal = request.getParameter("FEBestDeal");
         ModelAndView mv = new ModelAndView("dealHeader");
