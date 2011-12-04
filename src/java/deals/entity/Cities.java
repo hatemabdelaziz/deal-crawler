@@ -13,7 +13,7 @@ public class Cities  implements java.io.Serializable {
 
     @JsonProperty()
      private Integer id;
-    @JsonProperty()
+
      private Countries countries;
     @JsonProperty()
      private String name;
@@ -23,7 +23,6 @@ public class Cities  implements java.io.Serializable {
      private String lon;
     @JsonProperty()
      private String currency;
-    @JsonProperty()
      private Set dealses = new HashSet(0);
 
     public Cities() {

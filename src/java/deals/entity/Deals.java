@@ -53,7 +53,7 @@ public class Deals implements java.io.Serializable {
     private long remainingHours;
     @JsonProperty()
     private long remainingMinutes;
-    @JsonProperty()
+
     static final long ONE_HOUR = 60 * 60 * 1000L;
 
 
