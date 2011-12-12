@@ -60,14 +60,14 @@ public class DealController extends MultiActionController {
     public ModelAndView dealHeader(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
         String FEBestDeal = request.getParameter("FEBestDeal");
         ModelAndView mv = new ModelAndView("dealHeader");
-        dealDao.deleteAllDealsByFromSite(Deals.FromSite.cobone.name());
-        setDeal(request, response);
+//        dealDao.deleteAllDealsByFromSite(Deals.FromSite.cobone.name());
+//        setDeal(request, response);
         return mv;
     }
 
     public void setDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
         Deals.FromSite[] fromSites = Deals.FromSite.values();
-        String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&partnersList=3&startNumber=0";
+        String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&partnersList=3&startNumber=0&sortBy=discount&sortDir=ASC";
         String categorylistIds = "";
         HtmlCleaner cleaner = new HtmlCleaner();
         CleanerProperties props = new CleanerProperties();
@@ -131,42 +131,42 @@ public class DealController extends MultiActionController {
                             deal.setTitle(dealtitle);
                         }
                         ///////// ////////////////////////////////////// deal Url on real site  /////////////////////////////////////////
-//                        Pattern pUrl = Pattern.compile("-?\\d+");
-//                        Matcher mUrl = pUrl.matcher(dealUrl);
-//                        int dealoolaDealId = 0;
-//                        if (mUrl.find()) {
-//                            dealoolaDealId = Integer.parseInt(mUrl.group());
-//
-//                            if (dealoolaDealId != 0) {
-//                                String BuyDealUrl = "http://dealoola.activedd.com/front/dealoola/buffer.htm?id=" + dealoolaDealId;
-//                                TagNode dealBuyUrlNode = new HtmlCleaner(props).clean(new URL(BuyDealUrl));
-//                                Object[] dealbuyUrlObjs = dealPageNode.evaluateXPath("//div[@class='message']");
-//                               System.out.println("-------- dealbuyUrlObjs.length -----"+dealbuyUrlObjs.length);
-//                                if (dealbuyUrlObjs != null && dealbuyUrlObjs.length >= 1) {
-//
-//                                    TagNode dealUrlNode = (TagNode) dealbuyUrlObjs[0];
-//                                    List<TagNode> urlNode = dealUrlNode.getElementListByName("a", true);
-//                                    String dealBuyUrl =  urlNode.get(0).getAttributeByName("href");
-//                                    System.out.println("------------------- dealBuyUrl" + dealBuyUrl);
-//                                    deal.setTitle(dealBuyUrl);
-//                                }
-//                            }
-//                        }
+                        Pattern pUrl = Pattern.compile("-?\\d+");
+                        Matcher mUrl = pUrl.matcher(dealUrl);
+                        int dealoolaDealId = 0;
+                        System.out.println("----------dealUrl"+dealUrl);
+                        if (mUrl.find()) {
+                            dealoolaDealId = Integer.parseInt(mUrl.group());
+
+                            if (dealoolaDealId != 0) {
+                                String BuyDealUrl = "http://dealoola.activedd.com/front/dealoola/buffer.htm?id=" + dealoolaDealId;
+                                TagNode dealBuyUrlNode = new HtmlCleaner(props).clean(new URL(BuyDealUrl));
+                                Object[] dealbuyUrlObjs = dealBuyUrlNode.evaluateXPath("//div[@class='message']");
+                               System.out.println("-------- dealbuyUrlObjs.length -----"+dealbuyUrlObjs.length+"BuyDealUrl-"+BuyDealUrl);
+                                if (dealbuyUrlObjs != null && dealbuyUrlObjs.length >= 1) {
+
+                                    TagNode dealUrlNode = (TagNode) dealbuyUrlObjs[0];
+                                    List<TagNode> urlNode = dealUrlNode.getElementListByName("a", true);
+                                    String dealBuyUrl =  urlNode.get(0).getAttributeByName("href");
+                                    deal.setUrl(dealBuyUrl);
+                                }
+                            }
+                        }
 
                         ////////////////////////////////////////// deal desc/////////////////////////////////////////
 
-                        Object[] dealDescObjs = dealPageNode.evaluateXPath("//p[@class='f deal-text']");
-
-                        if (dealDescObjs != null && dealDescObjs.length >= 1) {
-                            TagNode descNode = (TagNode) dealDescObjs[0];
-                            if (dealTitleObjs != null && dealTitleObjs.length >= 1) {
-                                TagNode titleNode = (TagNode) dealTitleObjs[0];
-                                titleNode.removeFromTree();
-                            }
-                            String dealDesc = descNode.getText().toString().trim();
-                            deal.setDescription(dealDesc);
-
-                        }
+//                        Object[] dealDescObjs = dealPageNode.evaluateXPath("//p[@class='f deal-text']");
+//
+//                        if (dealDescObjs != null && dealDescObjs.length >= 1) {
+//                            TagNode descNode = (TagNode) dealDescObjs[0];
+//                            if (dealTitleObjs != null && dealTitleObjs.length >= 1) {
+//                                TagNode titleNode = (TagNode) dealTitleObjs[0];
+//                                titleNode.removeFromTree();
+//                            }
+//                            String dealDesc = descNode.getText().toString().trim();
+//                            deal.setDescription(dealDesc);
+//
+//                        }
                         /////////////////////////////////////////////// deal image/////////////////////////////////////////
 
                         Object[] dealIamgeObs = dealPageNode.evaluateXPath("//div[@class='deal_page_image f']");

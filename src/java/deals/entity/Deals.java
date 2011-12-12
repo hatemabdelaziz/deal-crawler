@@ -67,7 +67,7 @@ public class Deals implements java.io.Serializable {
         this.currency = currency;
     }
 
-    public Deals(Cities city, Language language, String title, String description, BigDecimal value, BigDecimal discount, BigDecimal price, BigDecimal saving, Date end, String url, String photo, int views, int bestDeal, String currency) {
+    public Deals(Cities city, Language language, String title, String description, BigDecimal value, BigDecimal discount, BigDecimal price, BigDecimal saving, Date end, String url, String photo, int views, int bestDeal, String currency, long remainingMinutes, long remainingHours) {
         this.city = city;
         this.language = language;
         this.title = title;
@@ -82,6 +82,8 @@ public class Deals implements java.io.Serializable {
         this.views = views;
         this.bestDeal = bestDeal;
         this.currency = currency;
+        this.remainingMinutes = remainingMinutes;
+        this.remainingHours= remainingHours;
     }
 
     public Integer getId() {
