@@ -61,24 +61,36 @@ public class DealController extends MultiActionController {
         String FEBestDeal = request.getParameter("FEBestDeal");
         ModelAndView mv = new ModelAndView("dealHeader");
 //        dealDao.deleteAllDealsByFromSite(Deals.FromSite.cobone.name());
-//        setDeal(request, response);
+        setDeal(request, response);
         return mv;
     }
 
     public void setDeal(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
-        Deals.FromSite[] fromSites = Deals.FromSite.values();
-        String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&partnersList=3&startNumber=0&sortBy=discount&sortDir=ASC";
+//        Deals.FromSite[] fromSites = Deals.FromSite.values();
+        String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&startNumber=0&sortBy=discount&sortDir=ASC";
+//             String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&partnersList=3&startNumber=0&sortBy=discount&sortDir=ASC";
+
         String categorylistIds = "";
         HtmlCleaner cleaner = new HtmlCleaner();
         CleanerProperties props = new CleanerProperties();
         Language en = (Language) dealDao.get(Language.class, 2);
-
+        String partnersListIds="";
 
         /*
          *  get all categories in dealoola search
          */
         TagNode categoriesNode = new HtmlCleaner(props).clean(new URL("http://dealoola.activedd.com/front/core/home.htm"));
-        Object[] categoriesDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
+              Object[] categoriesDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
+
+        Object[] partenerDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div/ul");
+           TagNode partenerNode = (TagNode) partenerDivObjs[0];
+            List<TagNode> partnerCheckboxInputs = partenerNode.getElementListByName("input", true);
+            for (TagNode theInput : partnerCheckboxInputs) {
+                String thepartnerId = theInput.getAttributeByName("value");
+                partnersListIds = partnersListIds + "&partnersList=" + thepartnerId;
+            }
+            url = url + partnersListIds;
+
         if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
             TagNode categoryNode = (TagNode) categoriesDivObjs[0];
             List<TagNode> checkboxInputs = categoryNode.getElementListByName("input", true);
@@ -86,11 +98,13 @@ public class DealController extends MultiActionController {
                 String theCategoryId = theInput.getAttributeByName("value");
                 categorylistIds = categorylistIds + "&categoriesList=" + theCategoryId;
             }
+            
             url = url + categorylistIds;
-
+              
             /*
              *  get all cities in our site and then get deal sfor each city
              */
+       
 
             Iterator<Cities> cities = dealDao.findAll(Cities.class).iterator();
 
@@ -101,7 +115,15 @@ public class DealController extends MultiActionController {
                 /*
                  *   when we get all deals from search page we will get deal link to get  deal details
                  */
+                    System.out.println("cityUrl "+ cityUrl);
+                Iterator<Cities> Sities = dealDao.findAll(Cities.class).iterator();
+                Deals.FromSite[] fromSites = Deals.FromSite.values();
+//                for(Deals.FromSite fromSite : fromSites){
+           
+//                  Deals.FromSite
+//                System.out.println("+city url"+cityUrl);
                 TagNode searchDealNode = new HtmlCleaner(props).clean(new URL(cityUrl));
+
                 Object[] searchDealsDiv = searchDealNode.evaluateXPath("//p[@class='f deal-breif']");
                 /*
                  * searchDealsDiv.length  means iterat in all deals in search deal page  and get  deal link in dealoola
@@ -114,7 +136,7 @@ public class DealController extends MultiActionController {
                     BigDecimal dealdisc = BigDecimal.ZERO;
                     TagNode dealNode = (TagNode) searchDealsDiv[dealNo];
                     deal.setCurrency(city.getCurrency());
-                    deal.setFromSite(Deals.FromSite.cobone.name());
+//                    deal.setFromSite(fromSite.name());
                     List<TagNode> readLinkNode = dealNode.getElementListByName("a", true);
                     if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
                         /*
@@ -130,6 +152,20 @@ public class DealController extends MultiActionController {
                             String dealtitle = titleNode.getText().toString().trim();
                             deal.setTitle(dealtitle);
                         }
+                       ///////// ////////////////////////////////////// deal title /////////////////////////////////////////
+                        Object[] dealSiteObjs = dealPageNode.evaluateXPath("//div[@class='share-element f']/span[@class='f offer-source-result comment']");
+                        if (dealSiteObjs != null && dealSiteObjs.length >= 1) {
+                            TagNode siteNode = (TagNode) dealSiteObjs[0];
+                            String dealSite = siteNode.getText().toString().trim();
+                            deal.setFromSite(dealSite);
+                        }
+//                        ///////// ////////////////////////////////////// deal title /////////////////////////////////////////
+//                        Object[] dealTitleObjs = dealPageNode.evaluateXPath("//span[@class='deal-discount']/a");
+//                        if (dealTitleObjs != null && dealTitleObjs.length >= 1) {
+//                            TagNode titleNode = (TagNode) dealTitleObjs[0];
+//                            String dealtitle = titleNode.getText().toString().trim();
+//                            deal.setTitle(dealtitle);
+//                        }
                         ///////// ////////////////////////////////////// deal Url on real site  /////////////////////////////////////////
                         Pattern pUrl = Pattern.compile("-?\\d+");
                         Matcher mUrl = pUrl.matcher(dealUrl);
@@ -270,7 +306,7 @@ public class DealController extends MultiActionController {
                     dealDao.save(deal);
 
                 }
-
+//            }
             }
 
         }
@@ -283,13 +319,17 @@ public class DealController extends MultiActionController {
     public 
     @ResponseBody
     Object searchdeals(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
-        Integer cityId = 608;
-        if (request.getParameter("id") != null && request.getParameter("id") != "") {
-            cityId = Integer.parseInt(request.getParameter("id"));
+        String cityName ="Riyadh";
+        String siteName ="Cobone";
+        if (request.getParameter("cityName") != null && request.getParameter("cityName") != "") {
+            cityName = request.getParameter("cityName");
         }
-        System.out.println("------b list");
+        if (request.getParameter("siteName") != null && request.getParameter("siteName") != "") {
+            siteName = request.getParameter("siteName");
+        }
+
         CommandList list = new CommandList();
-        List<Object> deals = dealDao.getCityDeals(2, cityId, "end", "ASC");
+        List<Object> deals = dealDao.getCityDeals(2, cityName, "end", "ASC",siteName);
         System.out.println("------b list size" +deals.size());
         list.setList(deals);
         list.setCurrentServerDate(new Date());

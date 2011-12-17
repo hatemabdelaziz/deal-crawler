@@ -15,7 +15,7 @@ public class Deals implements java.io.Serializable {
     
     public enum FromSite {
 
-        dealgobbler, gonabit, cobone, fustuq, makhsoom, groupon, offerna, yallabuyit, souq, nailthedeal
+        Cobone, Darendeal, Offerna, Souq, Dealgobbler, Dealsouk, Dealwaty, Dubib, El7a2, Fustuq,Haladeals,joyoffer,kobonaty,Livingsocial,Makhsoom,Moosavings,Nailthedeal,Thescoupon,Yallabanana,yallabuyit,sheeel
     }
     @JsonProperty()
     private Integer id;

@@ -467,15 +467,17 @@ public class DealDao extends HibernateDaoSupport {
     }
 
     @Transactional
-    public List<Object> getCityDeals(int langId, int cityId, String orderColumn, String orderWay) {
+    public List<Object> getCityDeals(int langId, String cityName, String orderColumn, String orderWay , String fromSite) {
         Calendar currentDate = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateNow = formatter.format(currentDate.getTime());
         //System.out.println("currentdate" + currentDate + "dateNow" + dateNow);
-        String query = "from Deals deals where deals.city.id = :cityId and deals.language.id = :langId and deals.end > '" + dateNow + "' order by deals." + orderColumn + " " + orderWay;
+        String query = "from Deals deals where deals.city.name = :cityName and deals.fromSite = :fromSite and deals.language.id = :langId and deals.end > '" + dateNow + "' order by deals." + orderColumn + " " + orderWay;
         Query hql = getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(query);
         hql.setParameter("langId", langId);
-        hql.setParameter("cityId", cityId);
+        hql.setParameter("cityName", cityName);
+         hql.setParameter("fromSite", fromSite);
+
         return hql.list();
     }
 }
