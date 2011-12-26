@@ -69,8 +69,8 @@ public class DealDao extends HibernateDaoSupport {
     }
     
         @Transactional
-    public void deleteAllDealsByFromSite(String fromSite) {
-            String query = "delete from deals where fromSite like '"+fromSite+"'";
+    public void deleteAllDealsByFromSite() {
+            String query = "truncate deals";
         getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(query);
     }
 

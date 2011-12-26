@@ -36,4 +36,9 @@
       <bean id="dealDao" class="deals.dao.DealDao">
           <property name="hibernateTemplate" ref="hibernateTemplate"/>
       </bean>
+      <bean id="dealService" class="deals.service.DealService">
+          <property name="dealDao" ref="dealDao"/>
+      </bean>
+      
+      
     </beans>

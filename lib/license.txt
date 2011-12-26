@@ -1,0 +1,8 @@
+	<module name='quartz'
+		licenseType='apache-2.0'
+		version='1.5.2'
+		projectHome='http://www.opensymphony.com/'
+		description='Quartz is a full-featured, open source job scheduling system that can be integrated with, or used along side virtually any J2EE or J2SE application'>
+		<jar name='quartz-all-1.5.2.jar' />
+		<jar name='quartz.jar' />
+	</module>

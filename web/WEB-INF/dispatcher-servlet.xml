@@ -24,10 +24,8 @@ class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMa
         </bean>
         
     <context:component-scan base-package="deals.controller" use-default-filters="false">
-        <context:include-filter type="annotation"
-expression="org.springframework.stereotype.Controller"/>
-        <context:include-filter type="annotation"
-expression="org.springframework.stereotype.Component"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
     </context:component-scan>
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
