@@ -1,9 +1,9 @@
 #java specific
 *.class
 build/
-dist/
+dist
 #netbeans ignore personal stuff
-nbproject/
+nbproject
 
 ## generic files to ignore
 *~
