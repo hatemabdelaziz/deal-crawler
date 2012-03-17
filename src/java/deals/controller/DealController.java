@@ -4,6 +4,7 @@
  */
 package deals.controller;
 
+import com.google.gson.Gson;
 import deals.service.DealService;
 import deals.command.CommandList;
 import deals.command.CommandObject;
@@ -16,7 +17,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.htmlcleaner.XPatherException;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,12 +45,16 @@ public class DealController extends MultiActionController {
     
 
     @RequestMapping("dealHeader.htm")
-    public ModelAndView dealHeader(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
+    public 
+    @ResponseBody
+    Object dealHeader(HttpServletRequest request, HttpServletResponse response) throws IOException, XPatherException, ParseException {
         //String FEBestDeal = request.getParameter("FEBestDeal");
-        ModelAndView mv = new ModelAndView("dealHeader");
+        //ModelAndView mv = new ModelAndView("dealHeader");
         
         dealService.setDeal();
-        return mv;
+        
+    return "";
+        //return mv;
     }
 
     

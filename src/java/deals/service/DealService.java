@@ -4,13 +4,17 @@
  */
 package deals.service;
 
+import com.google.gson.Gson;
 import deals.dao.DealDao;
 import deals.entity.Cities;
 import deals.entity.Deals;
 import deals.entity.Language;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,8 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
@@ -39,42 +41,44 @@ public class DealService {
     }
 
     
-    public void setDeal() throws IOException, XPatherException, ParseException {
+        public void setDeal() throws IOException, XPatherException, ParseException {
 //        Deals.FromSite[] fromSites = Deals.FromSite.values();
         dealDao.deleteAllDealsByFromSite();
-        String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&startNumber=0&sortBy=discount&sortDir=ASC";
+        String params="&sortBy=discount&sortDir=ASC";
+        String url = "http://www.dealoola.com/Vouchers/";
+//        String url = "http://dealoola.activedd.com/Vouchers/?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&startNumber=0&sortBy=discount&sortDir=ASC";
 //             String url = "http://dealoola.activedd.com/front/deals/searchdeals.htm?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&partnersList=3&startNumber=0&sortBy=discount&sortDir=ASC";
 
         String categorylistIds = "";
         HtmlCleaner cleaner = new HtmlCleaner();
         CleanerProperties props = new CleanerProperties();
         Language en = (Language) dealDao.get(Language.class, 2);
-        String partnersListIds="";
+//        String partnersListIds="";
 
         /*
          *  get all categories in dealoola search
          */
-        TagNode categoriesNode = new HtmlCleaner(props).clean(new URL("http://dealoola.activedd.com/front/core/home.htm"));
-              Object[] categoriesDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
+//        TagNode categoriesNode = new HtmlCleaner(props).clean(new URL("http://dealoola.activedd.com/front/core/home.htm"));
+//              Object[] categoriesDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div");
 
-        Object[] partenerDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div/ul");
-           TagNode partenerNode = (TagNode) partenerDivObjs[0];
-            List<TagNode> partnerCheckboxInputs = partenerNode.getElementListByName("input", true);
-            for (TagNode theInput : partnerCheckboxInputs) {
-                String thepartnerId = theInput.getAttributeByName("value");
-                partnersListIds = partnersListIds + "&partnersList=" + thepartnerId;
-            }
-            url = url + partnersListIds;
+//        Object[] partenerDivObjs = categoriesNode.evaluateXPath("//div[@class='accordion_contant no_p']/div/ul");
+//           TagNode partenerNode = (TagNode) partenerDivObjs[0];
+//            List<TagNode> partnerCheckboxInputs = partenerNode.getElementListByName("input", true);
+//            for (TagNode theInput : partnerCheckboxInputs) {
+//                String thepartnerId = theInput.getAttributeByName("value");
+//                partnersListIds = partnersListIds + "&partnersList=" + thepartnerId;
+//            }
+//            url = url + partnersListIds;
 
-        if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
-            TagNode categoryNode = (TagNode) categoriesDivObjs[0];
-            List<TagNode> checkboxInputs = categoryNode.getElementListByName("input", true);
-            for (TagNode theInput : checkboxInputs) {
-                String theCategoryId = theInput.getAttributeByName("value");
-                categorylistIds = categorylistIds + "&categoriesList=" + theCategoryId;
-            }
-            
-            url = url + categorylistIds;
+//        if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
+//            TagNode categoryNode = (TagNode) categoriesDivObjs[0];
+//            List<TagNode> checkboxInputs = categoryNode.getElementListByName("input", true);
+//            for (TagNode theInput : checkboxInputs) {
+//                String theCategoryId = theInput.getAttributeByName("value");
+//                categorylistIds = categorylistIds + "&categoriesList=" + theCategoryId;
+//            }
+//
+//            url = url + categorylistIds;
               
             /*
              *  get all cities in our site and then get deal sfor each city
@@ -85,14 +89,16 @@ public class DealService {
 
             while (cities.hasNext()) {
                 Cities city = cities.next();
-                String cityid = "&cityId=" + city.getId();
-                String cityUrl = url + cityid;
+                String cityName=city.getName();
+                String cityid = "cityId=" + city.getId();
+                String cityUrl = url +cityName+".htm?"+cityid+params;
+
                 /*
                  *   when we get all deals from search page we will get deal link to get  deal details
                  */
                     System.out.println("cityUrl "+ cityUrl);
-                Iterator<Cities> Sities = dealDao.findAll(Cities.class).iterator();
-                Deals.FromSite[] fromSites = Deals.FromSite.values();
+//                Iterator<Cities> Sities = dealDao.findAll(Cities.class).iterator();
+//                Deals.FromSite[] fromSites = Deals.FromSite.values();
 //                for(Deals.FromSite fromSite : fromSites){
            
 //                  Deals.FromSite
@@ -103,6 +109,8 @@ public class DealService {
                 /*
                  * searchDealsDiv.length  means iterat in all deals in search deal page  and get  deal link in dealoola
                  */
+                                    System.out.println("cityUrl "+ searchDealsDiv.length);
+
                 for (int dealNo = 0; dealNo < searchDealsDiv.length; dealNo++) {
                     Deals deal = new Deals();
                     BigDecimal dealPrice = BigDecimal.ZERO;
@@ -113,7 +121,7 @@ public class DealService {
                     deal.setCurrency(city.getCurrency());
 //                    deal.setFromSite(fromSite.name());
                     List<TagNode> readLinkNode = dealNode.getElementListByName("a", true);
-                    if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
+//                    if (categoriesDivObjs != null && categoriesDivObjs.length >= 1) {
                         /*
                          * deal link
                          */
@@ -272,7 +280,7 @@ public class DealService {
 
                         }
 
-                    }
+//                    }
 
                     deal.setCity(city);
                     deal.setLanguage(en);
@@ -285,5 +293,4 @@ public class DealService {
             }
 
         }
-    }
 }
