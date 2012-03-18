@@ -14,10 +14,10 @@
         <many-to-one name="language" class="deals.entity.Language" fetch="select" lazy="false">
             <column name="language_id" not-null="true" />
         </many-to-one>
-        <property name="title" type="string">
+        <property name="simpleTitle" type="string">
             <column name="title" />
         </property>
-        <property name="description" type="string">
+        <property name="simpleDescription" type="string">
             <column name="description" length="65535" />
         </property>
         <property name="value" type="big_decimal">
@@ -32,8 +32,8 @@
         <property name="saving" type="big_decimal">
             <column name="saving" precision="10" />
         </property>
-        <property name="end" type="timestamp">
-            <column name="end" length="19" />
+        <property name="end" type="long">
+            <column name="end" not-null="true" />
         </property>
         <property name="url" type="string">
             <column name="url" />

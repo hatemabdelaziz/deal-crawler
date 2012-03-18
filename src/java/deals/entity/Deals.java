@@ -17,6 +17,13 @@ public class Deals implements java.io.Serializable {
 
         Cobone, Darendeal, Offerna, Souq, Dealgobbler, Dealsouk, Dealwaty, Dubib, El7a2, Fustuq,Haladeals,joyoffer,kobonaty,Livingsocial,Makhsoom,Moosavings,Nailthedeal,Thescoupon,Yallabanana,yallabuyit,sheeel
     }
+    
+    
+    
+    
+    
+    
+    
     @JsonProperty()
     private Integer id;
     @JsonProperty()
@@ -24,9 +31,9 @@ public class Deals implements java.io.Serializable {
     @JsonProperty()
     private Language language;
     @JsonProperty()
-    private String title;
+    private String simpleTitle;
     @JsonProperty()
-    private String description;
+    private String simpleDescription;
     @JsonProperty()
     private BigDecimal value;
     @JsonProperty()
@@ -36,7 +43,7 @@ public class Deals implements java.io.Serializable {
     @JsonProperty()
     private BigDecimal saving;
     @JsonProperty()
-    private Date end;
+    private Long end;
     @JsonProperty()
     private String url;
     @JsonProperty()
@@ -67,11 +74,11 @@ public class Deals implements java.io.Serializable {
         this.currency = currency;
     }
 
-    public Deals(Cities city, Language language, String title, String description, BigDecimal value, BigDecimal discount, BigDecimal price, BigDecimal saving, Date end, String url, String photo, int views, int bestDeal, String currency, long remainingMinutes, long remainingHours) {
+    public Deals(Cities city, Language language, String title, String description, BigDecimal value, BigDecimal discount, BigDecimal price, BigDecimal saving, Long end, String url, String photo, int views, int bestDeal, String currency, long remainingMinutes, long remainingHours) {
         this.city = city;
         this.language = language;
-        this.title = title;
-        this.description = description;
+        this.simpleTitle = title;
+        this.simpleDescription = description;
         this.value = value;
         this.discount = discount;
         this.price = price;
@@ -110,20 +117,20 @@ public class Deals implements java.io.Serializable {
         this.language = language;
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getSimpleDescription() {
+        return simpleDescription;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSimpleDescription(String simpleDescription) {
+        this.simpleDescription = simpleDescription;
     }
 
-    public String getDescription() {
-        return this.description;
+    public String getSimpleTitle() {
+        return simpleTitle;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSimpleTitle(String simpleTitle) {
+        this.simpleTitle = simpleTitle;
     }
 
     public BigDecimal getValue() {
@@ -158,11 +165,11 @@ public class Deals implements java.io.Serializable {
         this.saving = saving;
     }
 
-    public Date getEnd() {
+    public Long getEnd() {
         return this.end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(Long end) {
         this.end = end;
     }
 
@@ -216,7 +223,7 @@ public class Deals implements java.io.Serializable {
 
         public long getRemainingHours() {
         Date today = new Date();
-        long diff = end.getTime() - today.getTime();
+        long diff = end - today.getTime();
         diff = (diff + ONE_HOUR) / (ONE_HOUR);
         return diff;
     }
@@ -224,7 +231,7 @@ public class Deals implements java.io.Serializable {
     public long getRemainingMinutes() {
 
         Date today = new Date();
-        long diff = end.getTime() - today.getTime();
+        long diff = end - today.getTime();
         long hours = (diff + ONE_HOUR) / (ONE_HOUR);
         long mintues = (long) ((((double) (diff + ONE_HOUR) / (ONE_HOUR)) - hours) * 60);
         return mintues;
