@@ -470,7 +470,7 @@ public class DealDao extends HibernateDaoSupport {
     }
 
     @Transactional
-    @Cacheable(cacheName="getCityDeals")
+    //@Cacheable(cacheName="getCityDeals")
     public List<Object> getCityDeals(int langId, String cityName, String orderColumn, String orderWay , String fromSite) {
         Calendar currentDate = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
