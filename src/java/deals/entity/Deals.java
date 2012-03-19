@@ -30,9 +30,9 @@ public class Deals implements java.io.Serializable {
     private Cities city;
     @JsonProperty()
     private Language language;
-    @JsonProperty()
+    @JsonProperty("title")
     private String simpleTitle;
-    @JsonProperty()
+    @JsonProperty("description")
     private String simpleDescription;
     @JsonProperty()
     private BigDecimal value;
