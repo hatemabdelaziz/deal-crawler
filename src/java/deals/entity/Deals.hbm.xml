@@ -15,10 +15,10 @@
             <column name="language_id" not-null="true" />
         </many-to-one>
         <property name="simpleTitle" type="string">
-            <column name="title" />
+            <column name="simpleTitle" />
         </property>
         <property name="simpleDescription" type="string">
-            <column name="description" length="65535" />
+            <column name="simpleDescription" length="65535" />
         </property>
         <property name="value" type="big_decimal">
             <column name="value" precision="10" />

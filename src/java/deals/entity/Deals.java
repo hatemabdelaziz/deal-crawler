@@ -43,7 +43,7 @@ public class Deals implements java.io.Serializable {
     @JsonProperty()
     private BigDecimal saving;
     @JsonProperty()
-    private Long end;
+    private long end;
     @JsonProperty()
     private String url;
     @JsonProperty()
@@ -74,7 +74,7 @@ public class Deals implements java.io.Serializable {
         this.currency = currency;
     }
 
-    public Deals(Cities city, Language language, String title, String description, BigDecimal value, BigDecimal discount, BigDecimal price, BigDecimal saving, Long end, String url, String photo, int views, int bestDeal, String currency, long remainingMinutes, long remainingHours) {
+    public Deals(Cities city, Language language, String title, String description, BigDecimal value, BigDecimal discount, BigDecimal price, BigDecimal saving, long end, String url, String photo, int views, int bestDeal, String currency, long remainingMinutes, long remainingHours) {
         this.city = city;
         this.language = language;
         this.simpleTitle = title;
@@ -165,11 +165,11 @@ public class Deals implements java.io.Serializable {
         this.saving = saving;
     }
 
-    public Long getEnd() {
+    public long getEnd() {
         return this.end;
     }
 
-    public void setEnd(Long end) {
+    public void setEnd(long end) {
         this.end = end;
     }
 

@@ -10,6 +10,7 @@ import deals.command.CommandList;
 import deals.command.CommandObject;
 import deals.dao.DealDao;
 import deals.entity.Deals;
+import deals.entity.Language;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
@@ -68,10 +69,10 @@ public class DealController extends MultiActionController {
     Object searchdeals(HttpServletRequest request, HttpServletResponse response) throws IOException, ClassNotFoundException, ParseException {
         String cityName ="Riyadh";
         String siteName ="Cobone";
-        if (request.getParameter("cityName") != null && request.getParameter("cityName") != "") {
+        if (request.getParameter("cityName") != null && !request.getParameter("cityName").equals("")) {
             cityName = request.getParameter("cityName");
         }
-        if (request.getParameter("siteName") != null && request.getParameter("siteName") != "") {
+        if (request.getParameter("siteName") != null && !request.getParameter("siteName").equals("")) {
             siteName = request.getParameter("siteName");
         }
 

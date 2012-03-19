@@ -7,6 +7,7 @@ package deals.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import deals.dao.DealDao;
 import deals.entity.Cities;
@@ -47,7 +48,7 @@ public class DealService {
     
         public void setDeal() throws IOException, XPatherException, ParseException {
 //        Deals.FromSite[] fromSites = Deals.FromSite.values();
-        //dealDao.deleteAllDealsByFromSite();
+        dealDao.deleteAllDealsByFromSite();
         //String params="&sortBy=discount&sortDir=DESC";
         //String url = "http://www.dealoola.com/Vouchers/";
 //        String url = "http://dealoola.activedd.com/Vouchers/?allCategories=1&allParents=0&langId=2&maxDiscount=100&maxPrice=2000&maxTime=maxValue&minDiscount=0&minPrice=0&startNumber=0&sortBy=discount&sortDir=ASC";
@@ -93,55 +94,55 @@ public class DealService {
     Language en = (Language) dealDao.get(Language.class, 2);
     while (cities.hasNext()) {
         Cities city = cities.next();
-        String cityName=city.getName();
-        String cityid = "cityId=" + city.getId();
-        //String cityUrl = url +cityName+".htm?"+cityid+params;
-
-        String firstUrl = "http://www.dealoola.com/front/deals/searchdeals.htm?"
+        String cityid = "&cityId=" + city.getId();
+        //for (int i = 0; i < 30; i++) {
+            String firstUrl = "http://www.dealoola.com/front/deals/searchdeals.htm?"
                 + "allCategories=1&allParents=0&categoriesList=9&"
                 + "categoriesList=7&categoriesList=8&categoriesList=4&"
                 + "categoriesList=5&categoriesList=6&categoriesList=10&"
-                + "categoriesList=1&categoriesList=2&categoriesList=3"
-                + "&langId=2&page=2&partnersList=8&partnersList=15&"
-                + "partnersList=17&partnersList=9&partnersList=23&partnersList=7&"
-                + "partnersList=12&partnersList=18&partnersList=5&partnersList=13&"
-                + "partnersList=16&partnersList=14&partnersList=27&partnersList=6&"
-                + "partnersList=4&partnersList=19&partnersList=20&partnersList=26&"
-                + "partnersList=24&partnersList=25&partnersList=1&partnersList=3&"
-                + "sortBy=discount&sortDir=DESC"
+                + "categoriesList=1&categoriesList=2&categoriesList=3&"
+                + "minPrice=0&maxPrice=2000&minDiscount=0&maxDiscount=100&maxTime=maxValue"
+                + "&langId=2&page=0&partnersList="+3
+                + "&sortBy=discount&sortDir=DESC"
                 +cityid;
                 /// test something
-                
-        System.out.println("firstUrl "+ firstUrl);
-        //System.out.println("secondUrl "+ secondUrl);
-        //String response1  = sendGetRequest(firstUrl, null);
-        //System.out.println("response1 "+ response1);
-        String response  = sendGetRequest(firstUrl, null);
-        System.out.println("response "+ response);
-         JsonElement json = new JsonParser().parse(response);
-	JsonArray array= json.getAsJsonArray();
-	Iterator iterator = array.iterator();
-	//List<Deals> details = new ArrayList<Deals>();
-	 List<Deals> deals =  new ArrayList<Deals>();
-	while(iterator.hasNext()){
-	    JsonElement json2 = (JsonElement)iterator.next();
-	    Gson gson = new Gson();
-	    Deals deal = gson.fromJson(json2, Deals.class);
-	    //can set some values in contact, if required 
-	    //details.add(deals);
-            deal.setCity(city);
             
-            deal.setLanguage(en);
-    //        deal.setViews(0);
-            deal.setBestDeal(0);
-            deals.add(deal);
-            //dealDao.save(deal);
-	}
-
-        for (Iterator<Deals> it = deals.iterator(); it.hasNext();) {
-            Deals deal = it.next();
-            dealDao.save(deal);
-        }
+                
+            System.out.println("firstUrl "+ firstUrl);
+            //System.out.println("secondUrl "+ secondUrl);
+            //String response1  = sendGetRequest(firstUrl, null);
+            //System.out.println("response1 "+ response1);
+            String response  = sendGetRequest(firstUrl, null);
+            
+             JsonElement json = new JsonParser().parse(response);
+            JsonArray array= json.getAsJsonArray();
+            Iterator iterator = array.iterator();
+            //List<Deals> details = new ArrayList<Deals>();
+             List<Deals> deals =  new ArrayList<Deals>();
+            while(iterator.hasNext()){
+                JsonElement json2 = (JsonElement)iterator.next();
+                Gson gson = new Gson();
+                Deals deal = gson.fromJson(json2, Deals.class);
+                JsonObject jsonO = json2.getAsJsonObject();
+                JsonElement siteName = jsonO.get("site").getAsJsonObject().get("site");
+                String siteNameString = siteName.getAsString();
+                //can set some values in contact, if required 
+                deal.setCity(city);
+                deal.setLanguage(en);
+                deal.setFromSite(siteNameString);
+                //deal.setViews(0);
+                deal.setBestDeal(0);
+                deal.setId(null);
+                deals.add(deal);
+            }
+            System.out.println("number of deals "+ deals.size());
+            for (Iterator<Deals> it = deals.iterator(); it.hasNext();) {
+                
+                Deals deal = it.next();
+                dealDao.save(deal);
+            }
+        //}
+    }
 
         
                 
@@ -342,7 +343,7 @@ public class DealService {
 
 //                }
 //            }
-            }
+//            }
 
         }
         

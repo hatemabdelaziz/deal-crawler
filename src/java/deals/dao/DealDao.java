@@ -4,6 +4,7 @@
  */
 package deals.dao;
 
+import com.googlecode.ehcache.annotations.Cacheable;
 import deals.entity.Deals;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,6 +27,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 
 /**
  *
@@ -70,8 +72,9 @@ public class DealDao extends HibernateDaoSupport {
     
         @Transactional
     public void deleteAllDealsByFromSite() {
-            String query = "truncate deals";
-        getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(query);
+            String query = "truncate table deals";
+        SQLQuery truncateQuery = getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(query);
+        truncateQuery.executeUpdate();
     }
 
     @Transactional
@@ -467,6 +470,7 @@ public class DealDao extends HibernateDaoSupport {
     }
 
     @Transactional
+    @Cacheable(cacheName="getCityDeals")
     public List<Object> getCityDeals(int langId, String cityName, String orderColumn, String orderWay , String fromSite) {
         Calendar currentDate = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

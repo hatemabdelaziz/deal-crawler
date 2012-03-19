@@ -11,4 +11,6 @@
     <mapping resource="deals/entity/Language.hbm.xml"/>
     <mapping resource="deals/entity/Cities.hbm.xml"/>
   </session-factory>
+  
+
 </hibernate-configuration>

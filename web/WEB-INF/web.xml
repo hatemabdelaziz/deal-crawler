@@ -5,6 +5,7 @@
         <param-value>
             /WEB-INF/applicationContext.xml,
             /WEB-INF/my-quartz.xml
+            /WEB-INF/ehcache.xml
         </param-value>
     </context-param>
     <listener>
